@@ -53,6 +53,7 @@ export class UsersService {
       );
     } catch (error) {
       console.log(error)
+      throw error
     }
   }
 
@@ -98,5 +99,6 @@ export class UsersService {
     })
   } catch(error) {
     console.log(error)
+    throw error
   }
 }
