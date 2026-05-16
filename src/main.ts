@@ -6,6 +6,9 @@ import { Logger, ValidationPipe } from "@nestjs/common";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  //permitir el trafico de datos del front al back
+  app.enableCors('*');
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
