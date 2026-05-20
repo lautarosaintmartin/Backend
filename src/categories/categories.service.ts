@@ -33,7 +33,7 @@ export class CategoriesService {
 
   async findAll() {
     try{
-      await this.prismaService.category.findMany()
+      return await this.prismaService.category.findMany()
     }catch(error){
       console.log(error)
       throw error
