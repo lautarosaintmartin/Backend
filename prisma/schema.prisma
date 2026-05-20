@@ -27,3 +27,12 @@ model User {
   @@index([email])
   @@map("users")
 }
+
+model Category{
+  id Int @id @default(autoincrement())
+  name String @unique @db.VarChar(255)
+  description String @db.Text
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updateAt DateTime @updatedAt @db.Timestamptz(3)
+}

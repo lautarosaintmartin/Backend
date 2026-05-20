@@ -38,6 +38,7 @@ export class UsersService {
       return await this.prismaService.user.findMany();
     } catch (error) {
       console.log(error)
+      throw error
     }
   }
 
@@ -46,8 +47,7 @@ export class UsersService {
       return await this.prismaService.user.findUnique(
         {
           where: {
-            id
-              : id
+            id: id
           }
         }
       );
@@ -92,13 +92,15 @@ export class UsersService {
   }
 
   async remove(id: number) {
+    try{
     return await this.prismaService.user.delete({
       where: {
         id,
       }
     })
-  } catch(error) {
-    console.log(error)
-    throw error
+    } catch(error) {
+      console.log(error)
+      throw error
+    }
   }
 }

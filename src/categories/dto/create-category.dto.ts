@@ -2,17 +2,15 @@ import { Type } from "class-transformer"
 import { IsString, Length, MinLength } from "class-validator"
 import { IsEmail, IsNumber} from "class-validator"
 
-export class CreateUserDto {
 
+export class CreateCategoryDto {
+    
     @IsString({message: 'El nombre debe ser texto.'})
     @Length(6, 255, { message: 'El nombre debe tener entre 6 y 255 caracteres.' })
-    fullname!: string
+    name!: string
 
-    @IsEmail({}, { message: 'El correo debe ser válido.'})
+    @IsString({ message: 'La categoria no es valida.'})
     @Length(6, 255, { message: 'El email debe tener entre 6 a 255 caracteres.' })
-    email!: string
+    description!: string
 
-    @IsString({ message: 'La contraseña debe ser texto.'})
-    @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres.'})
-    password!: string
 }
