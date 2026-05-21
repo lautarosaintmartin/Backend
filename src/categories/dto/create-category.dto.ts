@@ -6,7 +6,7 @@ import { IsEmail, IsNumber} from "class-validator"
 export class CreateCategoryDto {
     
     @IsString({message: 'El nombre debe ser texto.'})
-    @Length(3, 255, { message: 'El nombre debe tener al menors 3 caracteres.' })
+    @Length(3, 255, { message: 'El nombre debe tener al menos 3 caracteres.' })
     name!: string
 
     @IsString({ message: 'La categoria no es valida.'})
