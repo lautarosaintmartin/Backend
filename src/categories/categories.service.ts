@@ -33,7 +33,14 @@ export class CategoriesService {
 
   async findAll() {
     try{
-      return await this.prismaService.category.findMany()
+      const categories = await this.prismaService.category.findMany({
+        orderBy: {
+          name: "asc",
+        },
+      })
+
+      // return await this.prismaService.category.findMany()
+      return categories
     }catch(error){
       console.log(error)
       throw error

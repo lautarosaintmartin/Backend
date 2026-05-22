@@ -15,12 +15,13 @@ export class UsersService {
       //Validar que el correo exista
 
       const existingUser = await this.prismaService.user.findUnique(
-        {where:{
-          email: createUserDto.email,
-        }
-      })
+        {
+          where: {
+            email: createUserDto.email,
+          }
+        })
 
-      if(existingUser){
+      if (existingUser) {
         throw new ConflictException('El correo electrónico ya está en uso.')
       }
 
@@ -35,7 +36,14 @@ export class UsersService {
 
   async findAll() {
     try {
-      return await this.prismaService.user.findMany();
+      const users = await this.prismaService.user.findMany({
+        orderBy: {
+          fullname: "asc",
+        },
+      });
+     
+      return users
+      // return await this.prismaService.user.findMany();
     } catch (error) {
       console.log(error)
       throw error
@@ -66,15 +74,16 @@ export class UsersService {
         throw new NotFoundException('User not found')
       }
 
-       //Validar que el correo exista
+      //Validar que el correo exista
 
       const existingUser = await this.prismaService.user.findUnique(
-        {where:{
-          email: updateUserDto.email,
-        }
-      })
+        {
+          where: {
+            email: updateUserDto.email,
+          }
+        })
 
-      if(existingUser && existingUser.id !== id){
+      if (existingUser && existingUser.id !== id) {
         throw new ConflictException('El correo electrónico ya está en uso.')
       }
 
@@ -92,13 +101,13 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    try{
-    return await this.prismaService.user.delete({
-      where: {
-        id,
-      }
-    })
-    } catch(error) {
+    try {
+      return await this.prismaService.user.delete({
+        where: {
+          id,
+        }
+      })
+    } catch (error) {
       console.log(error)
       throw error
     }
