@@ -35,4 +35,23 @@ model Category{
 
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updateAt DateTime @updatedAt @db.Timestamptz(3)
+
+  products Products[]
+}
+
+model Products{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(255)
+  precioUnitario Decimal @db.Decimal(10, 2)
+  stock Int
+  id_categoria Int
+
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updateAt DateTime @updatedAt @db.Timestamptz(3)
+
+
+  categoria Category @relation(fields: [id_categoria], references: [id])
+
+  @@index([id])
+  @@map("products")
 }
