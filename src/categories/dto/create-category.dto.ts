@@ -9,8 +9,4 @@ export class CreateCategoryDto {
     @Length(3, 255, { message: 'El nombre debe tener al menos 3 caracteres.' })
     name!: string
 
-    @IsString({ message: 'La categoria no es valida.'})
-    @Length(3, 255, { message: 'La categoria debe tener al menos 3 caracteres.' })
-    description!: string
-
 }
