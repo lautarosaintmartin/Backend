@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -72,6 +72,8 @@ export class ProductsService {
 
   async update(id: number, updateProductDto: UpdateProductDto) {
     const product = await this.findOne(id)
+
+    Logger.debug(updateProductDto)
 
     try {
 

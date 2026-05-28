@@ -1,5 +1,5 @@
 import { Type } from "class-transformer"
-import { IsDecimal, isInt, IsInt, IsNotEmpty, IsNumber, IsNumberString, IsString, Length, Min } from "class-validator"
+import { IsDecimal, IsEmpty, isInt, IsInt, IsNotEmpty, IsNumber, IsNumberString, IsString, Length, Min } from "class-validator"
 
 
 export class CreateProductDto {
@@ -13,8 +13,8 @@ export class CreateProductDto {
     @Min(0, { message: 'El stock no puede ser negativo' })
     stock!: number
 
+    @Type(() => Number)
     @IsNotEmpty({ message: 'Debe seleccionar una categoria.' })
-    @IsNumberString({}, { message: 'Debe seleccionar una categoria.' })
     id_categoria!: number
 
     @Type(() => Number)
