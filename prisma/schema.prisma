@@ -45,13 +45,32 @@ model Products{
   precioUnitario Decimal @db.Decimal(10, 2)
   stock Int
   id_categoria Int
+  id_provider Int?
+
 
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updateAt DateTime @updatedAt @db.Timestamptz(3)
 
-
+  provider    Providers? @relation(fields: [id_provider], references: [id])
   categoria Category @relation(fields: [id_categoria], references: [id])
 
   @@index([id])
   @@map("products")
+}
+
+model Providers{
+    id Int @id @default(autoincrement())
+    name String @db.VarChar(255)
+    email String @unique @db.VarChar(255)
+    phone String @db.VarChar(255)
+    isActive Boolean @default(true)
+
+
+    createdAt DateTime @default(now()) @db.Timestamptz(3)
+    updateAt DateTime @updatedAt @db.Timestamptz(3)
+
+    products Products[]
+
+    @@index([id])
+    @@map("providers")
 }
