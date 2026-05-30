@@ -13,6 +13,11 @@ enum Role {
   USER
 }
 
+enum MovementType{
+  IN
+  OUT
+}
+
 model User {
   id Int @id @default(autoincrement())
   fullname String @db.VarChar(255)
@@ -22,6 +27,8 @@ model User {
 
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updateAt DateTime @updatedAt @db.Timestamptz(3)
+
+  movements Movement[]
 
   @@index([id])
   @@index([email])
@@ -47,9 +54,10 @@ model Products{
   id_categoria Int
   id_provider Int?
 
-
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updateAt DateTime @updatedAt @db.Timestamptz(3)
+
+  movements Movement[]
 
   provider    Providers? @relation(fields: [id_provider], references: [id])
   categoria Category @relation(fields: [id_categoria], references: [id])
@@ -73,4 +81,18 @@ model Providers{
 
     @@index([id])
     @@map("providers")
+}
+
+model Movement {
+  id Int @id @default(autoincrement())
+  type MovementType @default(IN)
+  date DateTime @default(now()) @db.Timestamptz(3)
+  amount Int @default(0)
+  priceUnit Decimal @db.Decimal(10, 2)
+
+  productId Int
+  product Products @relation(fields: [productId], references: [id])
+
+  userId Int
+  user User @relation(fields: [userId], references: [id])
 }

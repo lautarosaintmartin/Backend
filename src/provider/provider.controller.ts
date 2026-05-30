@@ -3,7 +3,7 @@ import { ProviderService } from './provider.service';
 import { CreateProviderDto } from './dto/create-provider.dto';
 import { UpdateProviderDto } from './dto/update-provider.dto';
 
-@Controller('provider')
+@Controller('providers')
 export class ProviderController {
   constructor(private readonly providerService: ProviderService) {}
 

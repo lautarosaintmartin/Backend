@@ -8,6 +8,7 @@ export class CreateProviderDto {
     name!: string
 
     @IsEmail({}, {message: 'El correo debe ser válido.'})
+    @Length(6, 255, { message: 'El email debe tener al menos 6 caracteres.' })
     email!: string
 
     @IsString({message: 'El numero debe ser valido'})
