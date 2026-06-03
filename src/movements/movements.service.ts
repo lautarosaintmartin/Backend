@@ -1,7 +1,8 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMovementDto } from './dto/create-movement.dto';
 import { UpdateMovementDto } from './dto/update-movement.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { MovementType } from '@generated';
 
 @Injectable()
 export class MovementsService {
@@ -11,16 +12,39 @@ export class MovementsService {
 
     try {
 
-      return await this.prismaService.movement.create({
+       await this.prismaService.movement.create({
         data: {
           ...createMovementDto,
           date: new Date(createMovementDto.date),
         },
-            include: {
-                user: true,
-                product: true,
-            }
+        include: {
+          user: true,
+          product: true,
+        }
       })
+
+      let product = await this.prismaService.products.findUnique({
+        where: {
+          id: createMovementDto.productId
+        }
+      })
+
+      if(!product){
+        throw new NotFoundException('Producto no encontrado')
+      }
+
+      let stock = createMovementDto.type === MovementType.IN ? product!.stock + createMovementDto.amount : product!.stock - createMovementDto.amount
+
+      return await this.prismaService.products.update({
+        where: {
+          id: createMovementDto.productId,
+        },
+        data: {
+          ...CreateMovementDto,
+          stock 
+        }
+      })
+
     } catch (error) {
       console.log(error)
       throw error
@@ -30,20 +54,20 @@ export class MovementsService {
   async findAll() {
     try {
       return await this.prismaService.movement.findMany({
-            include: {
-                user: true,
-                product: true,
-            }
+        include: {
+          user: true,
+          product: true,
         }
+      }
       );
 
-    }catch(error){
+    } catch (error) {
       console.log(error)
       throw error
     }
-    }
+  }
 
-    
+
   async findOne(id: number) {
     try {
       return await this.prismaService.movement.findUnique(
@@ -59,25 +83,25 @@ export class MovementsService {
     }
   }
 
-    async update(id: number, updateMovementDto: UpdateMovementDto) {
-      const movement = await this.findOne(id)
-  
-      try {
+  async update(id: number, updateMovementDto: UpdateMovementDto) {
+    const movement = await this.findOne(id)
 
-        return await this.prismaService.movement.update({
-          where: {
-            id,
-          },
-          data: updateMovementDto
-  
-        })
-      } catch (error) {
-        console.log(error)
-        throw error
-      }
+    try {
+
+      return await this.prismaService.movement.update({
+        where: {
+          id,
+        },
+        data: updateMovementDto
+
+      })
+    } catch (error) {
+      console.log(error)
+      throw error
     }
-  
-      async remove(id: number) {
+  }
+
+  async remove(id: number) {
     try {
       return await this.prismaService.movement.delete({
         where: {
