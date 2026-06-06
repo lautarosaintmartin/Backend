@@ -12,7 +12,7 @@ export class CreateMovementDto {
 
     @IsInt({message: 'La cantidad no es válida'})
     @Type(() => Number)
-    @Min(0, {message: 'La cantidad no puede ser negativa'})
+    @Min(1, {message: 'La cantidad no puede ser 0'})
     amount!: number
 
     @IsNotEmpty({message: 'El precio unitario es obligatorio'})

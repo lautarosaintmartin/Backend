@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMovementDto } from './dto/create-movement.dto';
 import { UpdateMovementDto } from './dto/update-movement.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -12,17 +12,6 @@ export class MovementsService {
 
     try {
 
-       await this.prismaService.movement.create({
-        data: {
-          ...createMovementDto,
-          date: new Date(createMovementDto.date),
-        },
-        include: {
-          user: true,
-          product: true,
-        }
-      })
-
       let product = await this.prismaService.products.findUnique({
         where: {
           id: createMovementDto.productId
@@ -33,18 +22,36 @@ export class MovementsService {
         throw new NotFoundException('Producto no encontrado')
       }
 
-      let stock = createMovementDto.type === MovementType.IN ? product!.stock + createMovementDto.amount : product!.stock - createMovementDto.amount
+      if(product.stock < createMovementDto.amount && createMovementDto.type === MovementType.OUT){
+        throw new BadRequestException('No hay stock suficiente')
+      }
 
-      return await this.prismaService.products.update({
-        where: {
-          id: createMovementDto.productId,
-        },
-        data: {
-          ...CreateMovementDto,
-          stock 
-        }
+      const transaction = await this.prismaService.$transaction(async (tx) => {
+
+        const newMovement = await tx.movement.create({
+          data: {
+            ...createMovementDto,
+            date: new Date(createMovementDto.date)
+          }
+        })
+
+        let newStock = createMovementDto.type === MovementType.IN ? product!.stock + createMovementDto.amount : product!.stock - createMovementDto.amount
+
+       await tx.products.update({
+          where: {
+            id: createMovementDto.productId,
+          },
+          data: {
+            stock: newStock,
+          }
+        })
+
+        return newMovement;
+
       })
 
+      return transaction
+    
     } catch (error) {
       console.log(error)
       throw error
